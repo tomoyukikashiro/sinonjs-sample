@@ -127,19 +127,21 @@ module.exports = function (grunt) {
         },
 
         karma: {
-            options: {
-                frameworks: 'mocha',
-                files: [
-                    '<%= yeoman.app %>/bower_components/**/*.js',
-                    '<%= yeoman.app %>/scripts/{,*/}*.js',
-                    'test/bower_components/chai/chai.js',
-                    'test/bower_components/mocha/mocha.js',
-                    'test/spec/{,*/}*.js',
-                    '!<%= yeoman.app %>/scripts/main.js'
-                ],
-                runnerPort: 8080,
-                singleRun: true,
-                browsers: ['PhantomJS']
+            unit: {
+                options: {
+                    frameworks: ['mocha', 'expect', 'sinon'],
+                    runnerPort: 8080,
+                    singleRun: true,
+                    browsers: ['PhantomJS'],
+                    files: [
+                        '<%= yeoman.app %>/bower_components/jquery/jquery.js',
+                        '<%= yeoman.app %>/scripts/{,*/}*.js',
+                        'test/spec/{,*/}*.js',
+                    ],
+                    exclude: [
+                        '<%= yeoman.app %>/scripts/main.js'
+                    ],
+                }
             }
         },
 
@@ -361,7 +363,7 @@ module.exports = function (grunt) {
         grunt.task.run(['serve']);
     });
 
-    grunt.registerTask('test', ['karma']);
+    grunt.registerTask('test', ['newer:jshint', 'karma']);
 
     grunt.registerTask('build', [
         'clean:dist',
