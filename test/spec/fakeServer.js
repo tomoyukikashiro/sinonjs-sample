@@ -32,11 +32,36 @@
             server.restore();
         });
 
+        // この方法では、レスポンスの型を指定出来ない
+        // 例えば、下記レスポンスだと、全て文字列としてしか判定出来ない
         it('check callback parameter', function () {
             var spy = sinon.spy();
             func(1, spy);
             server.requests[0].respond(200, '', '{data: 30}');
             expect(spy.calledWith('{data: 30}')).to.be.ok();
+        });
+
+        // 下記方法だと、レスポンスの型を指定できる
+        // 通常こちらを利用する方がいい
+        // 注意：レスポンスにしていするjsonオブジェクトのkeyはダブルクォーテーションでくくること
+        it('check callback parameter with Object Type', function(){
+            var spy = sinon.spy();
+
+            server.respondWith(
+                'GET',
+                'api/1',
+                [
+                    200,
+                    { 'Content-Type': 'application/json' },
+                    '{"data": 30}'
+                ]
+            );
+
+            func(1, spy);
+            server.respond();
+
+            expect(spy.calledWith({data: 30})).to.be.ok();
+
         });
 
     });

@@ -28,24 +28,22 @@
         });
 
         it('test for ajax function', function () {
-            var func = function(num, callback) {
+            var func = function(num) {
                     $.ajax(
                         {
                             url: 'api/' + num,
                             error: function() {
                                 console.log('[stub] call original function ajax'); // do not call
                             },
-                            success: function(data) {
+                            success: function() {
                                 console.log('[stub] call original function ajax'); // do not call
-                                callback(data);
                             }
                         }
                     );
-                },
-                spy = sinon.spy();
+                };
 
             sinon.stub($, 'ajax');
-            func(42, spy);
+            func(42);
 
             expect($.ajax.calledWithMatch({url: 'api/42'})).to.be.ok();
             $.ajax.restore();
@@ -57,19 +55,18 @@
                         {
                             url: 'api/' + num,
                             error: function() {
-                                console.log('[stub] call original function ajax'); // do not call
+                                console.log('[spy] call original function ajax'); // call
                             },
                             success: function(data) {
-                                console.log('[stub] call original function ajax'); // do not call
+                                console.log('[spy] call original function ajax'); // call
                                 callback(data);
                             }
                         }
                     );
-                },
-                spy = sinon.spy();
+                };
 
             sinon.spy($, 'ajax');
-            func(42, spy);
+            func(42);
 
             expect($.ajax.calledWithMatch({url: 'api/42'})).to.be.ok();
             $.ajax.restore();
